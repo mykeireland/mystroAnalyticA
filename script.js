@@ -1,4 +1,3 @@
-// script.js
 document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
         loadData();
@@ -13,33 +12,55 @@ function loadSettingsForm() {
         e.preventDefault();
         localStorage.setItem('account', document.getElementById('account').value);
         localStorage.setItem('container', document.getElementById('container').value);
-        localStorage.setItem('blob', document.getElementById('blob').value);
         localStorage.setItem('sas', document.getElementById('sas').value);
         alert('Settings saved');
+        loadData(); // Reload data after save if on index
     });
 
     document.getElementById('account').value = localStorage.getItem('account') || '';
-    document.getElementById('container').value = localStorage.getItem('container') || '';
-    document.getElementById('blob').value = localStorage.getItem('blob') || '';
+    document.getElementById('container').value = localStorage.getItem('container') || 'logicapp-outputs'; // Default to new container
     document.getElementById('sas').value = localStorage.getItem('sas') || '';
 }
 
 async function loadData() {
     const account = localStorage.getItem('account');
     const container = localStorage.getItem('container');
-    const blob = localStorage.getItem('blob');
     const sas = localStorage.getItem('sas');
 
-    if (!account || !container || !blob || !sas) {
+    if (!account || !container || !sas) {
         document.getElementById('dashboard').innerHTML = '<p>Please configure settings first.</p>';
         return;
     }
 
-    const url = `https://${account}.blob.core.windows.net/${container}/${blob}${sas}`;
+    const listUrl = `https://${account}.blob.core.windows.net/${container}?restype=container&comp=list${sas}`;
     try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Fetch failed');
-        const data = await response.json();
+        const response = await fetch(listUrl, { method: 'GET' });
+        if (!response.ok) throw new Error('List failed');
+        const xml = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xml, 'text/xml');
+        const blobs = xmlDoc.getElementsByTagName('Name');
+        let latestBlob = '';
+        let latestTime = 0;
+        for (let blob of blobs) {
+            const name = blob.textContent;
+            if (name.endsWith('.json')) {
+                const timeMatch = name.match(/(\d{8}_\d{6})/);
+                if (timeMatch) {
+                    const time = new Date(timeMatch[0].replace(/_/g, '/')).getTime();
+                    if (time > latestTime) {
+                        latestTime = time;
+                        latestBlob = name;
+                    }
+                }
+            }
+        }
+
+        if (!latestBlob) throw new Error('No JSON blob found');
+        const url = `https://${account}.blob.core.windows.net/${container}/${latestBlob}${sas}`;
+        const dataResponse = await fetch(url);
+        if (!dataResponse.ok) throw new Error('Fetch failed');
+        const data = await dataResponse.json();
         renderDashboard(data);
     } catch (error) {
         document.getElementById('dashboard').innerHTML = `<p>Error: ${error.message}</p>`;
