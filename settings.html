@@ -1,0 +1,28 @@
+<!-- settings.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Settings</h1>
+        <form id="settingsForm">
+            <label>Azure Storage Account:</label>
+            <input type="text" id="account" placeholder="e.g., mystorageaccount">
+            <label>Container:</label>
+            <input type="text" id="container" placeholder="e.g., mycontainer">
+            <label>Blob Name:</label>
+            <input type="text" id="blob" placeholder="e.g., data.json">
+            <label>SAS Token:</label>
+            <input type="text" id="sas" placeholder="e.g., ?sv=...">
+            <button type="submit">Save</button>
+        </form>
+        <a href="index.html">Back to Dashboard</a>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
