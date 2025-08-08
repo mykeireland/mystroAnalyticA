@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Room Assessment Dashboard</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>Room Assessment Dashboard</h1>
+
+    <div class="category" id="whiteboard-section">
+      <h2><i class="fas fa-chalkboard"></i> Whiteboard</h2>
+      <div class="row">
+        <div class="left" id="whiteboard-content">Awaiting Data…</div>
+        <div class="right">
+          <div class="status-indicator" id="whiteboard-status"></div>
+          <div class="timestamp" id="whiteboard-timestamp"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="category" id="bin-section">
+      <h2><i class="fas fa-trash"></i> Bin</h2>
+      <div class="row">
+        <div class="left" id="bin-content">Awaiting Data…</div>
+        <div class="right">
+          <div class="status-indicator" id="bin-status"></div>
+          <div class="timestamp" id="bin-timestamp"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="category" id="status-section">
+      <h2><i class="fas fa-info-circle"></i> System Status</h2>
+      <div id="status-content">Awaiting Data…</div>
+    </div>
+
+    <a href="settings.html">Settings</a>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
