@@ -122,12 +122,14 @@ async function loadDashboard() {
       document.getElementById("bin-timestamp").innerText = "Last image received: " + binTime.toLocaleTimeString();
     }
 
-    setStatus("whiteboard-status", whiteboard
-      ? (!bin ? "status-yellow" : whiteboardTime >= binTime ? "status-green" : "status-yellow")
-      : "status-red");
+ const timestampsClose = whiteboard && bin && Math.abs(whiteboardTime - binTime) < 3000;
 
+    setStatus("whiteboard-status", whiteboard
+      ? (!bin ? "status-yellow" : timestampsClose ? "status-green" : "status-yellow")
+      : "status-red");
+    
     setStatus("bin-status", bin
-      ? (!whiteboard ? "status-yellow" : binTime >= whiteboardTime ? "status-green" : "status-yellow")
+      ? (!whiteboard ? "status-yellow" : timestampsClose ? "status-green" : "status-yellow")
       : "status-red");
 
     updateStatus("Valid data detected.", "");
