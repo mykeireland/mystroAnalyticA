@@ -91,37 +91,49 @@ async function loadData() {
 function renderDashboard(data) {
     const dashboard = document.getElementById('dashboard');
     dashboard.innerHTML = '';
-    const categories = [
-        { name: 'whiteboard', icon: 'fa-chalkboard' },
-        { name: 'bin', icon: 'fa-trash' }
-    ];
+    
+    // Check if the data is valid and has a 'type'
+    if (!data || !data.type) {
+        dashboard.innerHTML = '<p>No valid data found.</p>';
+        return;
+    }
 
-    categories.forEach(cat => {
-        const itemData = data[cat.name]; // Get the nested object (e.g., data.whiteboard)
+    let category = {};
+    if (data.type === 'whiteboard') {
+        category = { name: 'whiteboard', icon: 'fa-chalkboard' };
+    } else if (data.type === 'bin') {
+        category = { name: 'bin', icon: 'fa-trash' };
+    } else {
+        dashboard.innerHTML = '<p>Unknown item type.</p>';
+        return;
+    }
 
-        const section = document.createElement('div');
-        section.className = 'category';
-        section.innerHTML = `<h2><i class="fas ${cat.icon}"></i>${cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}</h2>`;
+    // Create the main category section with icon
+    const section = document.createElement('div');
+    section.className = 'category';
+    section.innerHTML = `<h2><i class="fas ${category.icon}"></i>${category.name.charAt(0).toUpperCase() + category.name.slice(1)}</h2>`;
 
-        if (itemData && Object.keys(itemData).length > 0) { // Check if the item data exists
-            for (const key in itemData) {
-                if (itemData.hasOwnProperty(key)) {
-                    let display = `<span class="sub-item">${key.replace(/_/g, ' ')}: `;
-                    const value = itemData[key];
+    // Access the nested data object
+    const itemData = data.data;
+    
+    if (itemData && Object.keys(itemData).length > 0) {
+        for (const key in itemData) {
+            if (itemData.hasOwnProperty(key)) {
+                let display = `<span class="sub-item">${key.replace(/_/g, ' ')}: `;
+                const value = itemData[key];
 
-                    if (typeof value === 'boolean') {
-                        display += value ? '<i class="fas fa-check tick"></i>' : '<i class="fas fa-times cross"></i>';
-                    } else {
-                        display += value;
-                    }
-                    display += '</span>';
-                    section.innerHTML += display;
+                if (typeof value === 'boolean') {
+                    display += value ? '<i class="fas fa-check tick"></i>' : '<i class="fas fa-times cross"></i>';
+                } else {
+                    display += value;
                 }
+                display += '</span>';
+                section.innerHTML += display;
             }
-        } else {
-            section.innerHTML += '<span class="sub-item">No data</span>';
         }
+    } else {
+        section.innerHTML += '<span class="sub-item">No detailed data found.</span>';
+    }
 
-        dashboard.appendChild(section);
-    });
+    dashboard.appendChild(section);
 }
