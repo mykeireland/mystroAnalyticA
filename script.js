@@ -27,7 +27,7 @@ function loadSettingsForm() {
 async function loadData() {
     const account = 'mystroblobstore';
     const container = 'json-outbound';
-    // Your new SAS token without the leading '?'.
+    // Your SAS token without the leading '?'.
     const sasTokenWithoutPrefix = 'sp=rl&st=2025-08-08T01:57:52Z&se=2025-08-09T10:12:52Z&spr=https&sv=2024-11-04&sr=c&sig=1Sk6TZf%2F8dWWBikpGapJAjHT0F7%2FrGPWnvKgloxQpHQ%3D';
 
     if (!account || !container || !sasTokenWithoutPrefix) {
@@ -95,18 +95,27 @@ function renderDashboard(data) {
         { name: 'bin', key: 'bin_present', icon: 'fa-trash' },
         { name: 'desktop', key: 'desktop_clean', icon: 'fa-desktop' }
     ];
+
     categories.forEach(cat => {
         const section = document.createElement('div');
         section.className = 'category';
         section.innerHTML = `<h2><i class="fas ${cat.icon}"></i>${cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}</h2>`;
+        
         let display = `<span class="sub-item">${cat.name} status: `;
-        if (typeof data[cat.key] === 'boolean') {
-            display += data[cat.key] ? '<i class="fas fa-check tick"></i>' : '<i class="fas fa-times cross"></i>';
-        } else if (data[cat.key] !== undefined) {
-            display += data[cat.key];
+        
+        // Check if the key exists in the JSON data
+        if (data.hasOwnProperty(cat.key)) {
+            // Display the status based on data type
+            if (typeof data[cat.key] === 'boolean') {
+                display += data[cat.key] ? '<i class="fas fa-check tick"></i>' : '<i class="fas fa-times cross"></i>';
+            } else {
+                display += data[cat.key];
+            }
         } else {
+            // Display "N/A" if the key does not exist
             display += 'N/A';
         }
+        
         display += '</span>';
         section.innerHTML += display;
         dashboard.appendChild(section);
