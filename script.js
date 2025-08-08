@@ -1,33 +1,70 @@
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+        loadData(); // Initial load
+        setInterval(loadData, 60000); // Refresh every minute
+    } else if (window.location.pathname.endsWith('settings.html')) {
+        loadSettingsForm();
+    }
+});
+
+function loadSettingsForm() {
+    const form = document.getElementById('settingsForm');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        localStorage.setItem('account', document.getElementById('account').value);
+        localStorage.setItem('container', document.getElementById('container').value);
+        localStorage.setItem('sas', document.getElementById('sas').value);
+        alert('Settings saved');
+        if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+            loadData(); // Reload data if on index page
+        }
+    });
+
+    document.getElementById('account').value = localStorage.getItem('account') || '';
+    document.getElementById('container').value = localStorage.getItem('container') || 'logicapp-outputs';
+    document.getElementById('sas').value = localStorage.getItem('sas') || '';
+}
+
 async function loadData() {
-    // Hardcode the values here
+    // Hardcode the values here to bypass the settings form.
+    // NOTE: Ensure your SAS token has both Read and List permissions.
     const account = 'mystroblobstore';
     const container = 'json-outbound';
-    // Paste your full SAS token string here, including the '?'
-    const sas = 'sp=r&st=2025-08-08T01:38:10Z&se=2025-08-08T09:53:10Z&spr=https&sv=2024-11-04&sr=c&sig=AexFNBahN1Nudz2cjzu8Jg44fxX95q1Wpc5Edjc5Bsc%3D';
+    const sas = '?sp=r&st=2025-08-08T01:38:10Z&se=2025-08-08T09:53:10Z&spr=https&sv=2024-11-04&sr=c&sig=AexFNBahN1Nudz2cjzu8Jg44fxX95q1Wpc5Edjc5Bsc%3D';
 
     if (!account || !container || !sas) {
         document.getElementById('dashboard').innerHTML = '<p>Configuration missing.</p>';
         return;
     }
 
-    document.getElementById('dashboard').innerHTML = '<p>Loading...</p>'; // Show loading state
+    document.getElementById('dashboard').innerHTML = '<p>Loading...</p>';
     try {
         const listUrl = `https://${account}.blob.core.windows.net/${container}?restype=container&comp=list${sas}`;
         const response = await fetch(listUrl, { method: 'GET' });
         if (!response.ok) throw new Error(`List failed: ${response.status} ${response.statusText}`);
         const xml = await response.text();
-        console.log('Blob List XML:', xml); // Debug log
+        console.log('Blob List XML:', xml);
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(xml, 'text/xml');
         const blobs = xmlDoc.getElementsByTagName('Name');
         let latestBlob = '';
         let latestTime = 0;
+        
         for (let blob of blobs) {
             const name = blob.textContent;
-            if (name.endsWith('.json')) {
+            if (name.startsWith('assessment_') && name.endsWith('.json')) {
                 const timeMatch = name.match(/(\d{8}_\d{6})/);
                 if (timeMatch) {
-                    const time = new Date(timeMatch[0].replace(/_/g, '/')).getTime();
+                    const timeString = timeMatch[0];
+                    const year = parseInt(timeString.substring(0, 4));
+                    const month = parseInt(timeString.substring(4, 6)) - 1;
+                    const day = parseInt(timeString.substring(6, 8));
+                    const hour = parseInt(timeString.substring(9, 11));
+                    const minute = parseInt(timeString.substring(11, 13));
+                    const second = parseInt(timeString.substring(13, 15));
+                    
+                    const time = new Date(year, month, day, hour, minute, second).getTime();
+                    
                     if (time > latestTime) {
                         latestTime = time;
                         latestBlob = name;
@@ -35,17 +72,46 @@ async function loadData() {
                 }
             }
         }
-
-        if (!latestBlob) throw new Error('No JSON blob found');
-        console.log('Latest Blob:', latestBlob); // Debug log
+        
+        if (!latestBlob) throw new Error('No JSON blob matching the "assessment_YYYYMMDD_HHMMSS.json" format was found.');
+        console.log('Latest Blob:', latestBlob);
+        
         const url = `https://${account}.blob.core.windows.net/${container}/${latestBlob}${sas}`;
         const dataResponse = await fetch(url);
         if (!dataResponse.ok) throw new Error(`Fetch failed: ${dataResponse.status} ${dataResponse.statusText}`);
         const data = await dataResponse.json();
-        console.log('Fetched JSON:', data); // Debug log
+        console.log('Fetched JSON:', data);
         renderDashboard(data);
     } catch (error) {
         document.getElementById('dashboard').innerHTML = `<p>Error: ${error.message}</p>`;
-        console.error('Load Error:', error); // Debug log
+        console.error('Load Error:', error);
     }
+}
+
+function renderDashboard(data) {
+    const dashboard = document.getElementById('dashboard');
+    dashboard.innerHTML = '';
+
+    const categories = [
+        { name: 'whiteboard', key: 'whiteboard_clean', icon: 'fa-chalkboard' },
+        { name: 'bin', key: 'bin_present', icon: 'fa-trash' },
+        { name: 'desktop', key: 'desktop_clean', icon: 'fa-desktop' }
+    ];
+
+    categories.forEach(cat => {
+        const section = document.createElement('div');
+        section.className = 'category';
+        section.innerHTML = `<h2><i class="fas ${cat.icon}"></i>${cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}</h2>`;
+        let display = `<span class="sub-item">${cat.name} status: `;
+        if (typeof data[cat.key] === 'boolean') {
+            display += data[cat.key] ? '<i class="fas fa-check tick"></i>' : '<i class="fas fa-times cross"></i>';
+        } else if (data[cat.key] !== undefined) {
+            display += data[cat.key];
+        } else {
+            display += 'N/A';
+        }
+        display += '</span>';
+        section.innerHTML += display;
+        dashboard.appendChild(section);
+    });
 }
