@@ -1,37 +1,12 @@
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
-        loadData(); // Initial load
-        setInterval(loadData, 60000); // Refresh every minute
-    } else if (window.location.pathname.endsWith('settings.html')) {
-        loadSettingsForm();
-    }
-});
-
-function loadSettingsForm() {
-    const form = document.getElementById('settingsForm');
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        localStorage.setItem('account', document.getElementById('account').value);
-        localStorage.setItem('container', document.getElementById('container').value);
-        localStorage.setItem('sas', document.getElementById('sas').value);
-        alert('Settings saved');
-        if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
-            loadData(); // Reload data if on index page
-        }
-    });
-
-    document.getElementById('account').value = localStorage.getItem('account') || '';
-    document.getElementById('container').value = localStorage.getItem('container') || 'logicapp-outputs';
-    document.getElementById('sas').value = localStorage.getItem('sas') || '';
-}
-
 async function loadData() {
-    const account = localStorage.getItem('account');
-    const container = localStorage.getItem('container');
-    const sas = localStorage.getItem('sas');
+    // Hardcode the values here
+    const account = 'mystroblobstore';
+    const container = 'json-outbound';
+    // Paste your full SAS token string here, including the '?'
+    const sas = '?sv=2024-11-04&ss=b&srt=co&sp=rl&se=2025-09-07T01:46Z&st=2025-08-08T01:46Z&spr=https&sig=...';
 
     if (!account || !container || !sas) {
-        document.getElementById('dashboard').innerHTML = '<p>Please configure settings first.</p>';
+        document.getElementById('dashboard').innerHTML = '<p>Configuration missing.</p>';
         return;
     }
 
@@ -73,32 +48,4 @@ async function loadData() {
         document.getElementById('dashboard').innerHTML = `<p>Error: ${error.message}</p>`;
         console.error('Load Error:', error); // Debug log
     }
-}
-
-function renderDashboard(data) {
-    const dashboard = document.getElementById('dashboard');
-    dashboard.innerHTML = ''; // Clear previous content
-
-    const categories = [
-        { name: 'whiteboard', key: 'whiteboard_clean', icon: 'fa-chalkboard' },
-        { name: 'bin', key: 'bin_present', icon: 'fa-trash' },
-        { name: 'desktop', key: 'desktop_clean', icon: 'fa-desktop' }
-    ];
-
-    categories.forEach(cat => {
-        const section = document.createElement('div');
-        section.className = 'category';
-        section.innerHTML = `<h2><i class="fas ${cat.icon}"></i>${cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}</h2>`;
-        let display = `<span class="sub-item">${cat.name} status: `;
-        if (typeof data[cat.key] === 'boolean') {
-            display += data[cat.key] ? '<i class="fas fa-check tick"></i>' : '<i class="fas fa-times cross"></i>';
-        } else if (data[cat.key] !== undefined) {
-            display += data[cat.key];
-        } else {
-            display += 'N/A';
-        }
-        display += '</span>';
-        section.innerHTML += display;
-        dashboard.appendChild(section);
-    });
 }
