@@ -92,7 +92,7 @@ function renderDashboard(data) {
     const dashboard = document.getElementById('dashboard');
     dashboard.innerHTML = '';
     
-    // Check if the data is valid and has a 'type'
+    // Check if the data is valid and has a 'type' at the root
     if (!data || !data.type) {
         dashboard.innerHTML = '<p>No valid data found.</p>';
         return;
@@ -113,7 +113,7 @@ function renderDashboard(data) {
     section.className = 'category';
     section.innerHTML = `<h2><i class="fas ${category.icon}"></i>${category.name.charAt(0).toUpperCase() + category.name.slice(1)}</h2>`;
 
-    // Access the nested data object
+    // Access the nested data object correctly
     const itemData = data.data;
     
     if (itemData && Object.keys(itemData).length > 0) {
@@ -122,8 +122,8 @@ function renderDashboard(data) {
                 let display = `<span class="sub-item">${key.replace(/_/g, ' ')}: `;
                 const value = itemData[key];
 
-                if (typeof value === 'boolean') {
-                    display += value ? '<i class="fas fa-check tick"></i>' : '<i class="fas fa-times cross"></i>';
+                if (typeof value === 'string' && (value.toLowerCase() === 'yes' || value.toLowerCase() === 'no')) {
+                    display += (value.toLowerCase() === 'yes') ? '<i class="fas fa-check tick"></i>' : '<i class="fas fa-times cross"></i>';
                 } else {
                     display += value;
                 }
