@@ -122,21 +122,26 @@ async function loadDashboard() {
       document.getElementById("bin-timestamp").innerText = "Last image received: " + binTime.toLocaleTimeString();
     }
 
- const timestampsClose = whiteboard && bin && Math.abs(whiteboardTime - binTime) < 3000;
+   const timestampsClose = (a, b) => Math.abs(a - b) < 3000;
+
+    const now = new Date();
+    const whiteTime = whiteboardTime ? whiteboardTime.getTime() : 0;
+    const binTime = binTime ? binTime.getTime() : 0;
+    const latestTime = Math.max(whiteTime, binTime);
 
     setStatus("whiteboard-status", whiteboard
-      ? (!bin ? "status-yellow" : timestampsClose ? "status-green" : "status-yellow")
+      ? (timestampsClose(whiteTime, latestTime) ? "status-green" : "status-yellow")
       : "status-red");
     
     setStatus("bin-status", bin
-      ? (!whiteboard ? "status-yellow" : timestampsClose ? "status-green" : "status-yellow")
+      ? (timestampsClose(binTime, latestTime) ? "status-green" : "status-yellow")
       : "status-red");
-
-    updateStatus("Valid data detected.", "");
-  } catch (e) {
-    console.error("Fetch error:", e);
-    updateStatus("Error loading data.", "status-red");
-  }
+  
+      updateStatus("Valid data detected.", "");
+    } catch (e) {
+      console.error("Fetch error:", e);
+      updateStatus("Error loading data.", "status-red");
+    }
 }
 
 function icon(val) {
