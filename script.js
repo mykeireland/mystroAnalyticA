@@ -30,7 +30,7 @@ async function loadData() {
     // NOTE: Ensure your SAS token has both Read and List permissions.
     const account = 'mystroblobstore';
     const container = 'json-outbound';
-    const sas = '?sp=r&st=2025-08-08T01:38:10Z&se=2025-08-08T09:53:10Z&spr=https&sv=2024-11-04&sr=c&sig=AexFNBahN1Nudz2cjzu8Jg44fxX95q1Wpc5Edjc5Bsc%3D';
+    const sas = 'sp=r&st=2025-08-08T01:38:10Z&se=2025-08-08T09:53:10Z&spr=https&sv=2024-11-04&sr=c&sig=AexFNBahN1Nudz2cjzu8Jg44fxX95q1Wpc5Edjc5Bsc%3D';
 
     if (!account || !container || !sas) {
         document.getElementById('dashboard').innerHTML = '<p>Configuration missing.</p>';
