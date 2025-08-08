@@ -1,3 +1,7 @@
+// Show "Awaiting new data..." on initial load
+const dashboard = document.getElementById('dashboard');
+dashboard.innerHTML = '<p>Awaiting new data...</p>';
+
 // Load and process the API/JSON data
 async function loadData() {
     try {
@@ -7,7 +11,7 @@ async function loadData() {
 
         // Make sure we have valid structure
         if (!blobData.choices || !blobData.choices[0]?.message?.content) {
-            renderDashboard(null);
+            renderDashboard(null, false);
             return;
         }
 
@@ -15,20 +19,21 @@ async function loadData() {
         const parsedData = JSON.parse(blobData.choices[0].message.content);
 
         // Render to dashboard
-        renderDashboard(parsedData);
+        renderDashboard(parsedData, true);
     } catch (err) {
         console.error('Error loading data:', err);
-        renderDashboard(null);
+        renderDashboard(null, false);
     }
 }
 
 // Render the dashboard based on parsed data
-function renderDashboard(data) {
-    const dashboard = document.getElementById('dashboard');
+function renderDashboard(data, isData) {
     dashboard.innerHTML = '';
 
     if (!data || !data.type) {
-        dashboard.innerHTML = '<p>No valid data found.</p>';
+        dashboard.innerHTML = isData
+            ? '<p>Awaiting new data...</p>'
+            : '<p>No valid data found.</p>';
         return;
     }
 
