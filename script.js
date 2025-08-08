@@ -7,7 +7,7 @@ function renderDashboard(data) {
     ];
 
     categories.forEach(cat => {
-        const itemData = data.data[cat.name]; // Get the nested object (e.g., data.whiteboard)
+        const itemData = data[cat.name]; // Get the nested object (e.g., data.whiteboard)
 
         const section = document.createElement('div');
         section.className = 'category';
