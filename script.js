@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
-        loadData(); // Initial load
-        setInterval(loadData, 60000); // Refresh every minute
+        loadData();
+        setInterval(loadData, 60000);
     } else if (window.location.pathname.endsWith('settings.html')) {
         loadSettingsForm();
     }
@@ -16,7 +16,7 @@ function loadSettingsForm() {
         localStorage.setItem('sas', document.getElementById('sas').value);
         alert('Settings saved');
         if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
-            loadData(); // Reload data if on index page
+            loadData();
         }
     });
 
@@ -26,20 +26,27 @@ function loadSettingsForm() {
 }
 
 async function loadData() {
-    // Hardcode the values here to bypass the settings form.
-    // NOTE: Ensure your SAS token has both Read and List permissions.
     const account = 'mystroblobstore';
     const container = 'json-outbound';
-    const sas = 'sp=r&st=2025-08-08T01:38:10Z&se=2025-08-08T09:53:10Z&spr=https&sv=2024-11-04&sr=c&sig=AexFNBahN1Nudz2cjzu8Jg44fxX95q1Wpc5Edjc5Bsc%3D';
+    // This is a correct SAS token string. It does NOT have a leading '?'
+    // Please regenerate a new one in the portal with both Read and List permissions.
+    const sasTokenWithoutPrefix = 'sp=r&st=2025-08-08T01:38:10Z&se=2025-08-08T09:53:10Z&spr=https&sv=2024-11-04&sr=c&sig=AexFNBahN1Nudz2cjzu8Jg44fxX95q1Wpc5Edjc5Bsc%3D';
 
-    if (!account || !container || !sas) {
+    if (!account || !container || !sasTokenWithoutPrefix) {
         document.getElementById('dashboard').innerHTML = '<p>Configuration missing.</p>';
         return;
     }
 
     document.getElementById('dashboard').innerHTML = '<p>Loading...</p>';
     try {
-        const listUrl = `https://${account}.blob.core.windows.net/${container}?restype=container&comp=list${sas}`;
+        // Use a URLSearchParams object for robust URL building
+        const params = new URLSearchParams(sasTokenWithoutPrefix);
+        params.append('restype', 'container');
+        params.append('comp', 'list');
+
+        const listUrl = `https://${account}.blob.core.windows.net/${container}?${params.toString()}`;
+        console.log('Fetching URL:', listUrl);
+
         const response = await fetch(listUrl, { method: 'GET' });
         if (!response.ok) throw new Error(`List failed: ${response.status} ${response.statusText}`);
         const xml = await response.text();
@@ -76,8 +83,9 @@ async function loadData() {
         if (!latestBlob) throw new Error('No JSON blob matching the "assessment_YYYYMMDD_HHMMSS.json" format was found.');
         console.log('Latest Blob:', latestBlob);
         
-        const url = `https://${account}.blob.core.windows.net/${container}/${latestBlob}${sas}`;
-        const dataResponse = await fetch(url);
+        // Build the URL for the latest blob
+        const blobUrl = `https://${account}.blob.core.windows.net/${container}/${latestBlob}?${sasTokenWithoutPrefix}`;
+        const dataResponse = await fetch(blobUrl);
         if (!dataResponse.ok) throw new Error(`Fetch failed: ${dataResponse.status} ${dataResponse.statusText}`);
         const data = await dataResponse.json();
         console.log('Fetched JSON:', data);
