@@ -1,4 +1,4 @@
-// Show "Awaiting new data..." on initial load
+// Show "Awaiting new data..." immediately
 const dashboard = document.getElementById('dashboard');
 dashboard.innerHTML = '<p>Awaiting new data...</p>';
 
@@ -9,14 +9,21 @@ async function loadData() {
         const response = await fetch('data.json');
         const blobData = await response.json();
 
-        // Make sure we have valid structure
-        if (!blobData.choices || !blobData.choices[0]?.message?.content) {
-            renderDashboard(null, false);
+        // If no choices or empty content, just keep waiting
+        const content = blobData.choices?.[0]?.message?.content?.trim();
+        if (!content) {
+            renderDashboard(null, true);
             return;
         }
 
-        // Parse the inner JSON string into an object
-        const parsedData = JSON.parse(blobData.choices[0].message.content);
+        let parsedData;
+        try {
+            parsedData = JSON.parse(content);
+        } catch (parseErr) {
+            console.error('Error parsing JSON content:', parseErr);
+            renderDashboard(null, false);
+            return;
+        }
 
         // Render to dashboard
         renderDashboard(parsedData, true);
@@ -27,11 +34,11 @@ async function loadData() {
 }
 
 // Render the dashboard based on parsed data
-function renderDashboard(data, isData) {
+function renderDashboard(data, isWaiting) {
     dashboard.innerHTML = '';
 
     if (!data || !data.type) {
-        dashboard.innerHTML = isData
+        dashboard.innerHTML = isWaiting
             ? '<p>Awaiting new data...</p>'
             : '<p>No valid data found.</p>';
         return;
