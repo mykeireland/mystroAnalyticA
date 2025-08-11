@@ -1,32 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Room Assessment Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Room Assessment Dashboard</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css"/>
+
+  <!-- Preload logos -->
+  <link rel="preload" as="image" href="assets/images/ISS_Mystro_PrimaryLogo.png">
+  <link rel="preload" as="image" href="assets/images/InsightSystems_PrimaryLogo.png">
 </head>
 <body>
-    <!-- Brand header -->
-    <header class="brand-header">
-        <div class="brand-box">
-            <img src="assets/images/ISS_Mystro_PrimaryLogo.png" alt="Mystro Logo" class="brand-mystro">
-        </div>
-    </header>
+  <!-- Header: centered Mystro logo -->
+  <header class="brand-header">
+    <div class="brand-box">
+      <img src="assets/images/ISS_Mystro_PrimaryLogo.png" alt="Mystro" class="brand-mystro">
+    </div>
+  </header>
 
-    <div class="container">
-        <h1>Room Assessment Dashboard</h1>
-        <div id="dashboard"></div>
-        <a href="settings.html">Settings</a>
+  <div class="container" style="margin-top: 20px;">
+    <h1>Room Assessment Dashboard</h1>
+
+    <!-- Whiteboard card -->
+    <div class="category" id="whiteboard-section">
+      <h2><i class="fas fa-chalkboard"></i> Whiteboard</h2>
+      <div class="row">
+        <div class="left" id="whiteboard-content">Awaiting Data…</div>
+        <div class="right">
+          <div class="status-indicator" id="whiteboard-status"></div>
+          <div class="timestamp" id="whiteboard-timestamp"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- Footer branding -->
-    <footer class="site-footer">
-        <div class="footer-spacer"></div>
-        <img src="assets/images/InsightSystems_PrimaryLogo.png" alt="InSight Systems Logo" class="brand-insight">
-    </footer>
+    <!-- Bin card -->
+    <div class="category" id="bin-section">
+      <h2><i class="fas fa-trash"></i> Bin</h2>
+      <div class="row">
+        <div class="left" id="bin-content">Awaiting Data…</div>
+        <div class="right">
+          <div class="status-indicator" id="bin-status"></div>
+          <div class="timestamp" id="bin-timestamp"></div>
+        </div>
+      </div>
+    </div>
 
-    <script src="script.js"></script>
+    <!-- System status -->
+    <div class="category" id="status-section">
+      <h2><i class="fas fa-info-circle"></i> System Status</h2>
+      <div id="status-content">Awaiting Data…</div>
+    </div>
+
+    <a href="settings.html">Settings</a>
+  </div>
+
+  <!-- Footer: right-aligned Insight Systems logo -->
+  <footer class="site-footer">
+    <div class="footer-spacer"></div>
+    <img src="assets/images/InsightSystems_PrimaryLogo.png" alt="InSight Systems" class="brand-insight">
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
