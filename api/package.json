@@ -1,1 +1,10 @@
-
+{
+  "name": "room-assessment-api",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "@azure/identity": "^4.2.0",
+    "@azure/storage-blob": "^12.19.0"
+  }
+}
