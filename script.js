@@ -3,7 +3,7 @@
 // =========================
 // IMPORTANT: Set this to the exact Default domain from Azure Portal → Function App → Overview.
 // Example: "https://mystro-sec-endpoint-bjecbgefdbgmhbdv.australiaeast-01.azurewebsites.net"
-const API_BASE = "https://<PUT-YOUR-AZURE-FUNCTION-DEFAULT-DOMAIN-HERE>";
+const API_BASE = "https://mystro-sec-endpoint-bjecbgefdbgmhbdv.australiaeast-01.azurewebsites.net";
 const POLL_MS = 60000; // refresh every 60s
 
 // =========================
