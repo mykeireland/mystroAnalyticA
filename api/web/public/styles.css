@@ -1,3 +1,5 @@
+/* v1 layout for dashboard — no-store caching is set in HTML */
+
 /* Base */
 * { box-sizing: border-box; }
 body { font-family: Arial, sans-serif; background: #f4f4f4; color: #333; margin: 0; }
@@ -17,17 +19,17 @@ h1 { text-align: center; margin: 0 0 16px; }
 
 /* Status indicator light */
 .status-indicator { width: 14px; height: 14px; border-radius: 50%; background: #ccc; }
-.status-green  { background: #22c55e; } /* green-500 */
-.status-yellow { background: #eab308; } /* amber-500 */
-.status-red    { background: #ef4444; } /* red-500 */
+.status-green  { background: #22c55e; }  /* green */
+.status-yellow { background: #eab308; }  /* amber */
+.status-red    { background: #ef4444; }  /* red */
 
 @keyframes blink { 50% { opacity: .35; } }
 .blinking { animation: blink 1s linear infinite; }
 
 /* Icons for yes/no */
 .sub-item { margin: 5px 0; }
-.tick  { color: #22c55e; } /* green */
-.cross { color: #ef4444; } /* red */
+.tick  { color: #22c55e; }
+.cross { color: #ef4444; }
 
 /* Header / Footer branding */
 .brand-header { display: flex; justify-content: center; padding: 12px 0; background: #fff; }
