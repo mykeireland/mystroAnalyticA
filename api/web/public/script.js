@@ -1,9 +1,8 @@
 // =========================
 // Config
 // =========================
-// IMPORTANT: Set this to the exact Default domain from Azure Portal → Function App → Overview.
-// Example: "https://mystro-sec-endpoint-bjecbgefdbgmhbdv.australiaeast-01.azurewebsites.net"
-const API_BASE = "https://mystro-sec-endpoint-bjecbgefdbgmhbdv.australiaeast-01.azurewebsites.net";
+// Use same-origin APIs served by the Function App (no Static Web App, no SAS).
+const API_BASE = ""; // e.g., "" → fetch('/api/list'); DO NOT hardcode your azurewebsites.net host.
 const POLL_MS = 60000; // refresh every 60s
 
 // =========================
@@ -33,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // =========================
 async function fetchJSON(url, options = {}) {
   console.log("[fetchJSON]", url);
-  const res = await fetch(url, { cache: "no-store", ...options });
+  const res = await fetch(url, { cache: "no-store", credentials: "include", ...options });
   const ct = (res.headers.get("content-type") || "").toLowerCase();
   const text = await res.text();
 
