@@ -1,54 +1,43 @@
-
-/* ===== Base / Layout ===== */
-:root {
-  --brand-red: #D42B2B;
-  --shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
+/* Base */
 * { box-sizing: border-box; }
-body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #f6f7f9; color: #222; }
-.container { max-width: 980px; margin: 0 auto; padding: 12px 20px 28px; }
-h1 { text-align: center; margin: 12px 0 18px; font-size: 40px; letter-spacing: .3px; }
+body { font-family: Arial, sans-serif; background: #f4f4f4; color: #333; margin: 0; }
+.container { max-width: 960px; margin: 0 auto; padding: 20px; }
+h1 { text-align: center; margin: 0 0 16px; }
 
-/* ===== Brand Header/Footer ===== */
-.brand-header { background:#fff; box-shadow: var(--shadow); position: sticky; top:0; z-index: 2; }
-.brand-box { max-width: 980px; margin: 0 auto; padding: 8px 20px; display:flex; justify-content:center; align-items:center; }
-.brand-mystro { height: 56px; max-width: 360px; width:auto; object-fit: contain; }
+/* Cards */
+.category { background: #fff; padding: 16px; margin: 12px 0; border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+.category h2 { margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
 
-.site-footer { background:#fff; box-shadow: var(--shadow); padding: 10px 20px 14px; margin-top: 24px; display:flex; align-items:center; }
-.footer-spacer { flex:1; }
-.brand-insight { height: 34px; width:auto; object-fit: contain; opacity:.95; }
+/* Two-column row inside each card */
+.row { display: flex; gap: 16px; }
+.left { flex: 1; }
+.right { width: 260px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.timestamp { font-size: 0.9rem; color: #666; }
 
-/* ===== Cards ===== */
-.category { background:#fff; padding:18px; margin:14px 0; border-radius: 12px; box-shadow: var(--shadow); }
-.category h2 { margin: 0 0 12px; display:flex; align-items:center; gap:14px; }
-.category h2 i { font-size:26px; color:#444; }
-.row { display:flex; justify-content:space-between; gap:20px; }
-.left { flex:1; }
-.right { text-align:right; min-width: 220px; display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
-.sub-item { margin: 6px 0; }
-.tick { color: #17a34a; font-weight:700; }
-.cross { color: #d92d20; font-weight:700; }
+/* Status indicator light */
+.status-indicator { width: 14px; height: 14px; border-radius: 50%; background: #ccc; }
+.status-green  { background: #22c55e; } /* green-500 */
+.status-yellow { background: #eab308; } /* amber-500 */
+.status-red    { background: #ef4444; } /* red-500 */
 
-/* ===== Indicators / Status (colored circles) ===== */
-.status-indicator { width:16px; height:16px; border-radius:50%; display:inline-block; }
-.status-red { background:#d92d20; }
-.status-green { background:#15803d; }
-.status-yellow { background:#f59e0b; }
-.blinking { animation: blinker 1s linear infinite; }
-@keyframes blinker { 50% { opacity: 0; } }
-.timestamp { font-size: 13px; color:#555; }
+@keyframes blink { 50% { opacity: .35; } }
+.blinking { animation: blink 1s linear infinite; }
 
-/* ===== Forms / Links ===== */
-form { display: grid; gap: 10px; }
-input { padding: 10px 12px; border:1px solid #e1e3e8; border-radius:8px; }
-button { padding: 10px 14px; background: var(--brand-red); color: white; border: none; border-radius: 8px; cursor: pointer; }
-a { display: block; text-align: center; margin-top: 16px; color: var(--brand-red); text-decoration: underline; }
+/* Icons for yes/no */
+.sub-item { margin: 5px 0; }
+.tick  { color: #22c55e; } /* green */
+.cross { color: #ef4444; } /* red */
 
-/* ===== Responsive ===== */
-@media (max-width: 720px) {
-  .right { min-width: 140px; }
-  h1 { font-size: 28px; }
-  .brand-mystro { height: 44px; }
-  .brand-insight { height: 28px; }
-}
+/* Header / Footer branding */
+.brand-header { display: flex; justify-content: center; padding: 12px 0; background: #fff; }
+.brand-box { max-width: 240px; }
+.brand-mystro { width: 100%; height: auto; }
+
+.site-footer { display: flex; align-items: center; padding: 16px 20px; background: #fff; }
+.footer-spacer { flex: 1; }
+.brand-insight { height: 36px; width: auto; }
+
+/* Links (if any remain) */
+a { color: #0b5ed7; text-decoration: none; }
+a:hover { text-decoration: underline; }
