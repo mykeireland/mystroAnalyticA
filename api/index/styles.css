@@ -1,45 +1,29 @@
-/* v1 layout for dashboard — no-store caching is set in HTML */
-
 /* Base */
 * { box-sizing: border-box; }
 body { font-family: Arial, sans-serif; background: #f4f4f4; color: #333; margin: 0; }
 .container { max-width: 960px; margin: 0 auto; padding: 20px; }
 h1 { text-align: center; margin: 0 0 16px; }
-
 /* Cards */
-.category { background: #fff; padding: 16px; margin: 12px 0; border-radius: 12px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+.category { background: #fff; padding: 16px; margin: 12px 0; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
 .category h2 { margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
-
-/* Two-column row inside each card */
 .row { display: flex; gap: 16px; }
 .left { flex: 1; }
 .right { width: 260px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
 .timestamp { font-size: 0.9rem; color: #666; }
-
-/* Status indicator light */
 .status-indicator { width: 14px; height: 14px; border-radius: 50%; background: #ccc; }
-.status-green  { background: #22c55e; }  /* green */
-.status-yellow { background: #eab308; }  /* amber */
-.status-red    { background: #ef4444; }  /* red */
-
+.status-green { background: #22c55e; }
+.status-yellow { background: #eab308; }
+.status-red { background: #ef4444; }
 @keyframes blink { 50% { opacity: .35; } }
 .blinking { animation: blink 1s linear infinite; }
-
-/* Icons for yes/no */
 .sub-item { margin: 5px 0; }
-.tick  { color: #22c55e; }
+.tick { color: #22c55e; }
 .cross { color: #ef4444; }
-
-/* Header / Footer branding */
 .brand-header { display: flex; justify-content: center; padding: 12px 0; background: #fff; }
 .brand-box { max-width: 240px; }
 .brand-mystro { width: 100%; height: auto; }
-
 .site-footer { display: flex; align-items: center; padding: 16px 20px; background: #fff; }
 .footer-spacer { flex: 1; }
 .brand-insight { height: 36px; width: auto; }
-
-/* Links (if any remain) */
 a { color: #0b5ed7; text-decoration: none; }
 a:hover { text-decoration: underline; }
