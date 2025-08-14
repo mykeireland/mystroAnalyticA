@@ -1,8 +1,8 @@
 const { DefaultAzureCredential } = require("@azure/identity");
 const { BlobServiceClient } = require("@azure/storage-blob");
 
-// CORS
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "https://mystro-sec-endpoint-bjecbgefdbgmhbdv.australiaeast-01.azurewebsites.net";
+
 function corsHeaders(extra = {}) {
   return {
     "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
@@ -15,7 +15,9 @@ function corsHeaders(extra = {}) {
 }
 
 module.exports = async function (context, req) {
-  // Preflight
+  const log = context.log;
+
+  // Preflight check
   if ((req.method || "").toUpperCase() === "OPTIONS") {
     context.res = { status: 204, headers: corsHeaders() };
     return;
@@ -26,20 +28,39 @@ module.exports = async function (context, req) {
     const containerName = (req.query.container || process.env.CONTAINER_NAME || "json-outbound").toString();
     const name = (req.query.name || "").toString();
 
+    log("DEBUG: Incoming request", { account, containerName, name });
+
     if (!account) {
-      context.res = { status: 500, headers: corsHeaders({ "Content-Type": "application/json" }), body: { error: "Missing STORAGE_ACCOUNT_NAME" } };
-      return;
-    }
-    if (!name) {
-      context.res = { status: 400, headers: corsHeaders({ "Content-Type": "application/json" }), body: { error: "Missing query parameter 'name'" } };
+      context.res = {
+        status: 500,
+        headers: corsHeaders({ "Content-Type": "application/json" }),
+        body: { error: "Missing STORAGE_ACCOUNT_NAME" }
+      };
       return;
     }
 
+    if (!name) {
+      context.res = {
+        status: 400,
+        headers: corsHeaders({ "Content-Type": "application/json" }),
+        body: { error: "Missing query parameter 'name'" }
+      };
+      return;
+    }
+
+    log("DEBUG: Creating DefaultAzureCredential...");
     const cred = new DefaultAzureCredential();
+
+    log("DEBUG: Connecting to BlobServiceClient...");
     const service = new BlobServiceClient(`https://${account}.blob.core.windows.net`, cred);
+
+    log("DEBUG: Getting container client...");
     const container = service.getContainerClient(containerName);
 
-    if (!(await container.exists())) {
+    log("DEBUG: Checking if container exists...");
+    const containerExists = await container.exists();
+    log("DEBUG: Container exists?", containerExists);
+    if (!containerExists) {
       context.res = {
         status: 404,
         headers: corsHeaders({ "Content-Type": "application/json" }),
@@ -48,27 +69,53 @@ module.exports = async function (context, req) {
       return;
     }
 
+    log("DEBUG: Getting blob client...");
     const blob = container.getBlobClient(name);
-    if (!(await blob.exists())) {
-      context.res = { status: 404, headers: corsHeaders({ "Content-Type": "application/json" }), body: { error: "Blob not found", name } };
+
+    log("DEBUG: Checking if blob exists...");
+    const blobExists = await blob.exists();
+    log("DEBUG: Blob exists?", blobExists);
+    if (!blobExists) {
+      context.res = {
+        status: 404,
+        headers: corsHeaders({ "Content-Type": "application/json" }),
+        body: { error: "Blob not found", name }
+      };
       return;
     }
 
+    log("DEBUG: Getting blob properties...");
     const props = await blob.getProperties();
+
+    log("DEBUG: Downloading blob content...");
     const dl = await blob.download();
     const text = await streamToString(dl.readableStreamBody);
 
     let parsed;
-    try { parsed = JSON.parse(text); } catch { parsed = { raw: text }; }
+    try {
+      parsed = JSON.parse(text);
+      log("DEBUG: Successfully parsed JSON.");
+    } catch (err) {
+      log("WARN: Failed to parse JSON, falling back to raw text.");
+      parsed = { raw: text };
+    }
 
     context.res = {
       status: 200,
       headers: corsHeaders({ "Content-Type": "application/json" }),
-      body: { lastModified: props.lastModified, name, data: parsed }
+      body: {
+        lastModified: props.lastModified,
+        name,
+        data: parsed
+      }
     };
   } catch (err) {
-    context.log.error("Get failed:", err);
-    context.res = { status: 500, headers: corsHeaders({ "Content-Type": "application/json" }), body: { error: "Get failed", detail: String(err) } };
+    log.error("ERROR: Get failed", err);
+    context.res = {
+      status: 500,
+      headers: corsHeaders({ "Content-Type": "application/json" }),
+      body: { error: "Get failed", detail: String(err) }
+    };
   }
 };
 
