@@ -1,6 +1,7 @@
 const { DefaultAzureCredential } = require("@azure/identity");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const { Client } = require("@microsoft/microsoft-graph-client");
+const { TokenCredentialAuthenticationProvider } = require("@microsoft/microsoft-graph-client/auth");
 
 module.exports = async function (context, req) {
   context.log("graph-hook triggered with request:", req.body);
@@ -13,13 +14,10 @@ module.exports = async function (context, req) {
     }
 
     const credential = new DefaultAzureCredential();
-    const graphClient = Client.initWithCredential({
-      authProvider: (done) => {
-        credential.getToken("https://graph.microsoft.com/.default").then((tokenResponse) => {
-          done(null, tokenResponse.accessToken);
-        }).catch((err) => done(err, null));
-      }
+    const authProvider = new TokenCredentialAuthenticationProvider(credential, {
+      scopes: ["https://graph.microsoft.com/.default"]
     });
+    const graphClient = Client.initWithMiddleware({ authProvider: authProvider });
 
     const blobServiceClient = new BlobServiceClient(
       `https://mystroblobstore.blob.core.windows.net`,
@@ -34,7 +32,9 @@ module.exports = async function (context, req) {
         const blockBlobClient = containerClient.getBlockBlobClient(fileName);
 
         context.log(`Downloading file: ${fileName} from ${downloadUrl}`);
-        const response = await fetch(downloadUrl, { headers: { Authorization: `Bearer ${await credential.getToken("https://graph.microsoft.com/.default")}` } });
+        const response = await fetch(downloadUrl, {
+          headers: { Authorization: `Bearer ${await credential.getToken("https://graph.microsoft.com/.default")}` }
+        });
         const arrayBuffer = await response.arrayBuffer();
         context.log(`Uploading ${arrayBuffer.byteLength} bytes to images-inbound/${fileName}`);
         await blockBlobClient.uploadData(arrayBuffer, {
