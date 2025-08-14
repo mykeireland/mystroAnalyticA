@@ -6,7 +6,7 @@
       "direction": "in",
       "name": "req",
       "methods": ["get", "options"],
-      "route": "list"
+      "route": "get"
     },
     { "type": "http", "direction": "out", "name": "res" }
   ]
