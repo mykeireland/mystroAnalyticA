@@ -46,7 +46,7 @@ async function fetchJSON(url, options = {}) {
 async function loadDashboard() {
   try {
     updateStatus("Loading…", "");
-    const list = await fetchJSON(`${API_BASE}/list`);
+    const list = await fetchJSON(`/api/list`);
     const items = Array.isArray(list.items) ? list.items : [];
     console.log("[load] list count:", items.length, items.slice(0,3));
     if (!items.length) {
@@ -60,7 +60,7 @@ async function loadDashboard() {
     for (const it of items) {
       const name = it.name;
       if (!name) continue;
-      const got = await fetchJSON(`${API_BASE}/get?name=${encodeURIComponent(name)}`);
+      const got  = await fetchJSON(`/api/get?name=${encodeURIComponent(name)}`);
       const lm = got.lastModified ? new Date(got.lastModified) : null;
       const data = got.data || {};
       console.log("[load] checked:", name, "type:", data.type);
