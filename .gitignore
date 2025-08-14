@@ -2,3 +2,4 @@
 deploy.zip
 *.log
 node_modules/
+.DS_Store
