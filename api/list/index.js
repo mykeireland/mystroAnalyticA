@@ -5,7 +5,7 @@ const { BlobServiceClient } = require("@azure/storage-blob");
 const MAX_RESULTS = 50;
 
 // CORS
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "mystro-sec-endpoint-bjecbgefdbgmhbdv.australiaeast-01.azurewebsites.net";
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "https://mystro-sec-endpoint-bjecbgefdbgmhbdv.australiaeast-01.azurewebsites.net";
 function corsHeaders(extra = {}) {
   return {
     "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
