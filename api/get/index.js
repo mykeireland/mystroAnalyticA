@@ -2,7 +2,7 @@ const { DefaultAzureCredential } = require("@azure/identity");
 const { BlobServiceClient } = require("@azure/storage-blob");
 
 // CORS
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "mystro-sec-endpoint-bjecbgefdbgmhbdv.australiaeast-01.azurewebsites.net";
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "https://mystro-sec-endpoint-bjecbgefdbgmhbdv.australiaeast-01.azurewebsites.net";
 function corsHeaders(extra = {}) {
   return {
     "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
