@@ -9,43 +9,59 @@ const MIME = {
   ".png": "image/png",
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
-  ".svg": "image/svg+xml"
+  ".svg": "image/svg+xml",
+  ".ico": "image/x-icon"
 };
 
 module.exports = async function (context, req) {
   context.log("Request URL:", req.url);
-  try {
-    let rel = (req.params?.path || "").replace(/^\//, "");
-    if (!rel || rel.endsWith("/")) rel = "index.html";
-    const filePath = path.join(__dirname, rel);
-    context.log("Attempting to serve file:", filePath);
 
+  try {
+    // Determine relative file path
+    let rel = (req.params?.path || "").replace(/^\//, "");
+    if (!rel || rel.endsWith("/") || rel === "") rel = "index.html";
+
+    const filePath = path.join(__dirname, rel);
+    context.log("Resolved file path:", filePath);
+
+    // Security: Prevent path traversal
     if (!filePath.startsWith(__dirname)) {
-      context.log.error("Path traversal attempt detected:", filePath);
-      context.res = { status: 400, body: "Bad path" };
+      context.log.error("Blocked path traversal:", filePath);
+      context.res = { status: 400, body: "Bad request" };
       return;
     }
 
+    // Try reading the file
     let data;
     try {
       data = await fs.readFile(filePath);
-      context.log("File read successfully:", rel);
+      context.log("File served:", rel);
     } catch (err) {
-      context.log.error("File read failed:", err.message);
+      context.log.error("File not found:", rel);
       context.res = { status: 404, body: `Not found: ${rel}` };
       return;
     }
 
+    // Determine content type
     const ext = path.extname(rel).toLowerCase();
     const contentType = MIME[ext] || "application/octet-stream";
+
+    // Set cache headers
     const headers = {
       "Content-Type": contentType,
-      "Cache-Control": contentType.startsWith("text/html") ? "no-store" : "public, max-age=31536000, immutable"
+      "Cache-Control": contentType.includes("text/html")
+        ? "no-store"
+        : "public, max-age=31536000, immutable"
     };
 
-    context.res = { status: 200, headers, body: data };
+    context.res = {
+      status: 200,
+      headers,
+      body: data
+    };
+
   } catch (err) {
-    context.log.error("Unexpected error:", err.message);
+    context.log.error("Unhandled error:", err.message);
     context.res = { status: 500, body: "Server error" };
   }
 };
