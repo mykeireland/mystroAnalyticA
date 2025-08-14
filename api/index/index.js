@@ -1,34 +1,51 @@
-const fs = require("fs");
+const { promises: fs } = require("fs");
 const path = require("path");
 
+const MIME = {
+  ".html": "text/html; charset=utf-8",
+  ".js": "application/javascript; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".svg": "image/svg+xml"
+};
+
 module.exports = async function (context, req) {
-  const fileMap = {
-    "/": "index.html",
-    "/styles.css": "styles.css",
-    "/script.js": "script.js",
-  };
-
-  const filePath = fileMap[req.url.replace(/^.*\/api/, "")] || "index.html";
-  const fullPath = path.join(__dirname, filePath);
-
+  context.log("Request URL:", req.url);
   try {
-    const content = fs.readFileSync(fullPath, "utf8");
-    const ext = path.extname(filePath).toLowerCase();
+    let rel = (req.params?.path || "").replace(/^\//, "");
+    if (!rel || rel.endsWith("/")) rel = "index.html";
+    const filePath = path.join(__dirname, rel);
+    context.log("Attempting to serve file:", filePath);
 
-    const contentType = {
-      ".html": "text/html",
-      ".css": "text/css",
-      ".js": "application/javascript",
-    }[ext] || "text/plain";
+    if (!filePath.startsWith(__dirname)) {
+      context.log.error("Path traversal attempt detected:", filePath);
+      context.res = { status: 400, body: "Bad path" };
+      return;
+    }
 
-    context.res = {
-      headers: { "Content-Type": contentType },
-      body: content,
+    let data;
+    try {
+      data = await fs.readFile(filePath);
+      context.log("File read successfully:", rel);
+    } catch (err) {
+      context.log.error("File read failed:", err.message);
+      context.res = { status: 404, body: `Not found: ${rel}` };
+      return;
+    }
+
+    const ext = path.extname(rel).toLowerCase();
+    const contentType = MIME[ext] || "application/octet-stream";
+    const headers = {
+      "Content-Type": contentType,
+      "Cache-Control": contentType.startsWith("text/html") ? "no-store" : "public, max-age=31536000, immutable"
     };
+
+    context.res = { status: 200, headers, body: data };
   } catch (err) {
-    context.res = {
-      status: 404,
-      body: "File not found",
-    };
+    context.log.error("Unexpected error:", err.message);
+    context.res = { status: 500, body: "Server error" };
   }
 };
