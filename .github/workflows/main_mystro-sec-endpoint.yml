@@ -22,7 +22,6 @@ jobs:
       - name: Deploy to Function App (publish profile)
         uses: azure/webapps-deploy@v3
         with:
-          app-name: mystro-sec-endpoint
           package: deploy.zip
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_MYSTRO_SEC_ENDPOINT }}
 
@@ -31,3 +30,4 @@ jobs:
           curl -s -f -X POST \
             "https://mystro-sec-endpoint-bjecbgefdbgmhbdv.australiaeast-01.azurewebsites.net/admin/host/synctriggers?code=${{ secrets.FUNCAPP_HOST_KEY }}" \
             -H "Content-Type: application/json"
+
