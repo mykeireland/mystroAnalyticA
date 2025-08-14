@@ -4,6 +4,11 @@ const { Client } = require("@microsoft/microsoft-graph-client");
 const { TokenCredentialAuthenticationProvider } = require("@microsoft/microsoft-graph-client/auth");
 
 module.exports = async function (context, req) {
+  if (req.method === "GET" && req.query && req.query.validationToken) {
+    context.log("Graph validation handshake");
+    context.res = { status: 200, headers: { "Content-Type": "text/plain" }, body: req.query.validationToken };
+    return;
+  }
   context.log("graph-hook triggered with request:", req.body);
 
   try {
