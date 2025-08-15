@@ -1,9 +1,11 @@
 {
   "bindings": [
     {
-      "type": "eventGridTrigger",
-      "name": "eventGridEvent",
-      "direction": "in"
+      "name": "inputBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "inbound-images/{name}",
+      "connection": "AzureWebJobsStorage"
     }
   ]
 }
