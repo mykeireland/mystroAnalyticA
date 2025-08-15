@@ -19,8 +19,8 @@ module.exports = async function (context, req) {
   try {
     // Determine relative file path
     let rel = (req.params?.path || "").replace(/^\//, "");
-    if (!rel || rel.endsWith("/") || rel === "") rel = "index.html";
-
+    if (!rel || rel === "" || rel === "index") rel = "index.html";
+    
     const filePath = path.join(__dirname, rel);
     context.log("Resolved file path:", filePath);
 
