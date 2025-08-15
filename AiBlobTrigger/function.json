@@ -4,7 +4,7 @@
       "name": "inputBlob",
       "type": "blobTrigger",
       "direction": "in",
-      "path": "images-inbound/{name}",
+      "path": "inbound-images/{name}",
       "connection": "AzureWebJobsStorage"
     }
   ]
