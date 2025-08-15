@@ -1,17 +1,16 @@
-module.exports = async function (context, req) {
-  const events = req.body;
+module.exports = async function (context, eventGridEvent) {
+  const eventData = eventGridEvent.data;
+  const blobUrl = eventData.url;
 
-  for (const event of events) {
-    if (event.eventType === "Microsoft.Storage.BlobCreated") {
-      const blobUrl = event.data.url;
-      context.log("New blob created at:", blobUrl);
-      
-      // Optionally: extract container + filename and call your AI
-    }
-  }
+  context.log("📦 New blob created:", blobUrl);
 
-  context.res = {
-    status: 200,
-    body: "Event received"
-  };
+  // Optional: parse blob name if needed
+  const blobName = blobUrl.split('/').pop();
+
+  // TODO: Add logic to:
+  // - Download the blob
+  // - Send it to your AI endpoint
+  // - Upload the resulting JSON to json-outbound
+
+  context.done();
 };
