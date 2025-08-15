@@ -1,11 +1,16 @@
 {
   "bindings": [
     {
-      "name": "inputBlob",
-      "type": "blobTrigger",
+      "authLevel": "function",
+      "type": "httpTrigger",
       "direction": "in",
-      "path": "inbound-images/{name}",
-      "connection": "AzureWebJobsStorage"
+      "name": "req",
+      "methods": ["post"]
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
     }
   ]
 }
