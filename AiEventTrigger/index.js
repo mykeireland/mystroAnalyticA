@@ -1,13 +1,10 @@
 module.exports = async function (context, event) {
-  context.log("✅ Event Grid trigger received event:");
-  context.log(JSON.stringify(event, null, 2));
+  context.log("[AiEventTrigger] Received event:", event);
 
-  const url = event.data?.url || "No URL provided";
-  const eventType = event.eventType || "Unknown event type";
+  // Optional: log out blob URL if available
+  if (event?.data?.url) {
+    context.log("📂 Blob URL:", event.data.url);
+  }
 
-  context.log(`👉 Event Type: ${eventType}`);
-  context.log(`📂 Blob URL: ${url}`);
-
-  // Just return for now — add AI processing later
   context.done();
 };
