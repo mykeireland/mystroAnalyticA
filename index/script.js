@@ -1,5 +1,3 @@
-const POLL_MS = 60000;
-
 document.addEventListener("DOMContentLoaded", function () {
   const isDashboard = document.title.includes("Dashboard");
   console.log("[boot] title:", document.title, "isDashboard:", isDashboard);
