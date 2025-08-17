@@ -1,4 +1,4 @@
-name: Deploy static site to $web
+name: Deploy static site to Azure Storage
 
 on:
   push:
@@ -16,22 +16,23 @@ jobs:
         uses: azure/cli@v2
         with:
           inlineScript: |
+            # Upload all files from /index into the $web container
             az storage blob upload-batch \
-              --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
+              --account-name mystroblobstore \
               --account-key  ${{ secrets.AZURE_STORAGE_KEY }} \
               --destination '$web' \
               --source index \
               --no-progress
 
-            # set no-cache for html/js so users see updates immediately
+            # Set cache-control so HTML/JS update immediately
             az storage blob update \
-              --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
+              --account-name mystroblobstore \
               --account-key  ${{ secrets.AZURE_STORAGE_KEY }} \
               --container-name '$web' --name index.html \
               --content-cache-control "no-store, no-cache, must-revalidate" || true
 
             az storage blob update \
-              --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
+              --account-name mystroblobstore \
               --account-key  ${{ secrets.AZURE_STORAGE_KEY }} \
               --container-name '$web' --name script.js \
               --content-cache-control "no-store, no-cache, must-revalidate" || true
