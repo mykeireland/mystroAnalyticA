@@ -1,3 +1,7 @@
+/* Load the Metal Mania font for the AnalyticA tag */
+@import url('https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap');
+
+/* ===== ORIGINAL (unchanged) ============================================ */
 /* Base */
 * { box-sizing: border-box; }
 body { font-family: Arial, sans-serif; background: #f4f4f4; color: #333; margin: 0; }
@@ -21,36 +25,52 @@ h1 { text-align: center; margin: 0 0 16px; }
 .tick { color: #22c55e; }
 .cross { color: #ef4444; }
 
-/* Header / Branding — side-by-side (stable) */
+/* Header (original) */
 .brand-header { display: flex; justify-content: center; padding: 12px 0; background: #fff; }
-.brand-box { display: flex; align-items: flex-end; gap: 14px; position: static; }
-.brand-mystro { height: 44px; width: auto; display: block; }
+.brand-box { max-width: 240px; }
+.brand-mystro { width: 100%; height: auto; }
 
-/* AnalyticA wordmark (Metallica-style), inline next to logo */
-.brand-addon{
-  position: static;                 /* ensure NOT absolute */
-  display: inline-block; white-space: nowrap;
-  transform: skewX(-4deg) translateY(2px); /* small baseline nudge */
-  font-family: 'Metal Mania', system-ui, sans-serif;
-  font-size: 34px; line-height: 1; letter-spacing: .5px;
-  /* metallic look */
-  background: linear-gradient(180deg,#f8f8f8 0%, #d5d5d5 35%, #8e8e8e 60%, #e8e8e8 100%);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  text-shadow: 0 1px 0 #fff, 0 2px 4px rgba(0,0,0,.25);
-  margin: 0;
-}
-
-/* Footer */
+/* Footer (original) */
 .site-footer { display: flex; align-items: center; padding: 16px 20px; background: #fff; }
 .footer-spacer { flex: 1; }
 .brand-insight { height: 36px; width: auto; }
 
-/* Links */
 a { color: #0b5ed7; text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-/* Small screens */
+/* ===== ADD-ON (AnalyticA under mystro, no HTML change) ================= */
+/* Make a little room below the logo */
+.brand-header { padding: 12px 0 36px; }
+
+/* Anchor a pseudo-element to the existing logo box */
+.brand-box { position: relative; }
+
+/* Draw “AnalyticA” under the wordmark, roughly centered under the ‘o’ */
+.brand-box::after {
+  content: "AnalyticA";
+  position: absolute;
+  bottom: -14px;                 /* vertical offset under the logo */
+  left: 74%;                     /* tweak 72–76% to sit under the “o” */
+  transform: translateX(-50%) skewX(-4deg);
+  white-space: nowrap;
+
+  font-family: 'Metal Mania', system-ui, sans-serif;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: .5px;
+
+  /* metallic look */
+  background: linear-gradient(180deg,#f8f8f8 0%, #d5d5d5 35%, #8e8e8e 60%, #e8e8e8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 1px 0 #fff, 0 2px 4px rgba(0,0,0,.25);
+
+  pointer-events: none;
+}
+
+/* Small screens: nudge slightly */
 @media (max-width: 600px){
-  .brand-mystro { height: 40px; }
-  .brand-addon  { font-size: 22px; transform: skewX(-4deg) translateY(1px); }
+  .brand-header { padding: 12px 0 30px; }
+  .brand-box::after { left: 70%; bottom: -10px; font-size: 22px; }
 }
