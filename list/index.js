@@ -1,4 +1,4 @@
-// CommonJS. Node 20 on Azure Functions.
+// list/index.js  (CommonJS, Node 20 on Azure Functions)
 const { DefaultAzureCredential } = require("@azure/identity");
 const { BlobServiceClient } = require("@azure/storage-blob");
 
@@ -19,7 +19,6 @@ function corsHeaders(extra = {}) {
 }
 
 module.exports = async function (context, req) {
-  // Preflight
   if ((req.method || "").toUpperCase() === "OPTIONS") {
     context.res = { status: 204, headers: corsHeaders() };
     return;
@@ -28,6 +27,10 @@ module.exports = async function (context, req) {
   try {
     const account = process.env.STORAGE_ACCOUNT_NAME;
     const containerName = (req.query.container || process.env.CONTAINER_NAME || "json-outbound").toString();
+
+    // TTL minutes: query ?maxAgeMinutes=5 or env MAX_AGE_MINUTES (default 5)
+    const ttlMin = Number(req.query.maxAgeMinutes ?? process.env.MAX_AGE_MINUTES ?? 5);
+    const cutoff = new Date(Date.now() - ttlMin * 60_000);
 
     if (!account) {
       context.res = { status: 500, headers: corsHeaders({ "Content-Type": "application/json" }), body: { error: "Missing STORAGE_ACCOUNT_NAME" } };
@@ -39,32 +42,27 @@ module.exports = async function (context, req) {
     const container = service.getContainerClient(containerName);
 
     if (!(await container.exists())) {
-      context.res = {
-        status: 404,
-        headers: corsHeaders({ "Content-Type": "application/json" }),
-        body: { error: "Container not found", account, container: containerName }
-      };
+      context.res = { status: 404, headers: corsHeaders({ "Content-Type": "application/json" }), body: { error: "Container not found", account, container: containerName } };
       return;
     }
 
     const items = [];
     for await (const blob of container.listBlobsFlat()) {
       const name = blob.name || "";
-      if (!name.endsWith(".json") || !name.includes("assessment_")) continue;
-      items.push({ name, lastModified: blob.properties.lastModified });
+      const lm = blob.properties.lastModified;
+      if (!name.endsWith(".json")) continue;
+      if (!name.includes("assessment_")) continue; // your dashboard filter
+      if (!lm || lm < cutoff) continue;           // TTL filter
+      items.push({ name, lastModified: lm });
       if (items.length >= MAX_RESULTS) break;
     }
 
-    // newest-first by name (your naming already sorts lexicographically)
-    items.sort((a, b) => (b.name || "").localeCompare(a.name || ""));
+    // newest first by time
+    items.sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified));
 
-    context.res = { status: 200, headers: corsHeaders({ "Content-Type": "application/json" }), body: { items } };
+    context.res = { status: 200, headers: corsHeaders({ "Content-Type": "application/json" }), body: { items, ttlMinutes: ttlMin } };
   } catch (err) {
     context.log.error("List failed:", err);
-    context.res = {
-      status: 500,
-      headers: corsHeaders({ "Content-Type": "application/json" }),
-      body: { error: "List failed", detail: String(err) }
-    };
+    context.res = { status: 500, headers: corsHeaders({ "Content-Type": "application/json" }), body: { error: "List failed", detail: String(err) } };
   }
 };
