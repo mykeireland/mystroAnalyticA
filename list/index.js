@@ -1,4 +1,4 @@
-// list/index.js  (CommonJS, Node 20 on Azure Functions)
+// CommonJS, Node 20 on Azure Functions
 const { DefaultAzureCredential } = require("@azure/identity");
 const { BlobServiceClient } = require("@azure/storage-blob");
 
@@ -28,7 +28,7 @@ module.exports = async function (context, req) {
     const account = process.env.STORAGE_ACCOUNT_NAME;
     const containerName = (req.query.container || process.env.CONTAINER_NAME || "json-outbound").toString();
 
-    // TTL minutes: query ?maxAgeMinutes=5 or env MAX_AGE_MINUTES (default 5)
+    // TTL in minutes (default 5). Can override via ?maxAgeMinutes=NN
     const ttlMin = Number(req.query.maxAgeMinutes ?? process.env.MAX_AGE_MINUTES ?? 5);
     const cutoff = new Date(Date.now() - ttlMin * 60_000);
 
@@ -51,16 +51,16 @@ module.exports = async function (context, req) {
       const name = blob.name || "";
       const lm = blob.properties.lastModified;
       if (!name.endsWith(".json")) continue;
-      if (!name.includes("assessment_")) continue; // your dashboard filter
-      if (!lm || lm < cutoff) continue;           // TTL filter
+      if (!name.includes("assessment_")) continue; // keep your dashboard naming rule
+      if (!lm || lm < cutoff) continue;            // TTL filter
       items.push({ name, lastModified: lm });
       if (items.length >= MAX_RESULTS) break;
     }
 
-    // newest first by time
+    // newest-first by time (more reliable than lexicographic)
     items.sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified));
 
-    context.res = { status: 200, headers: corsHeaders({ "Content-Type": "application/json" }), body: { items, ttlMinutes: ttlMin } };
+    context.res = { status: 200, headers: corsHeaders({ "Content-Type": "application/json" }), body: { items } };
   } catch (err) {
     context.log.error("List failed:", err);
     context.res = { status: 500, headers: corsHeaders({ "Content-Type": "application/json" }), body: { error: "List failed", detail: String(err) } };
