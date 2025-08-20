@@ -69,17 +69,14 @@ a:hover { text-decoration: underline; }
   line-height: 1;
   letter-spacing: .5px;
 
-  /* main fill */
-  color:#111;
+/* main fill */
+color:#111;
 
-  /* glow & highlights: deep red → bright red → amber/yellow */
-  text-shadow:
-    0 1px 0   #7f1d1d,   /* dark red edge */
-    0 0 3px   #7f1d1d,
-    0 0 6px   #dc2626,   /* red glow */
-    0 0 10px  #ef4444,
-    0 0 14px  #f59e0b,   /* amber */
-    0 0 18px  #facc15;   /* soft yellow highlight */
+/* subtle red edge & soft glow */
+text-shadow:
+  0 1px 0   #3b0d0d,   /* very dark red edge */
+  0 0 2px   #7f1d1d,   /* deep red halo */
+  0 0 4px   #991b1b;   /* soft red glow */
 }
 
 /* Small screens */
