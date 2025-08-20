@@ -1,47 +1,56 @@
-/* Header / Branding — side-by-side (clean + responsive) */
-.brand-header{
-  display:flex;
-  justify-content:center;
-  padding:12px 0;
-  background:#fff;
-}
+/* Base */
+* { box-sizing: border-box; }
+body { font-family: Arial, sans-serif; background: #f4f4f4; color: #333; margin: 0; }
+.container { max-width: 960px; margin: 0 auto; padding: 20px; }
+h1 { text-align: center; margin: 0 0 16px; }
 
-.brand-box{
-  display:flex;
-  align-items:flex-end;              /* baseline-ish alignment to logo bottom */
-  gap:clamp(10px, 2vw, 16px);
-  position:static;                   /* ensure no absolute positioning */
-}
+/* Cards */
+.category { background: #fff; padding: 16px; margin: 12px 0; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+.category h2 { margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+.row { display: flex; gap: 16px; }
+.left { flex: 1; }
+.right { width: 260px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.timestamp { font-size: 0.9rem; color: #666; }
+.status-indicator { width: 14px; height: 14px; border-radius: 50%; background: #ccc; }
+.status-green { background: #22c55e; }
+.status-yellow { background: #eab308; }
+.status-red { background: #ef4444; }
+@keyframes blink { 50% { opacity: .35; } }
+.blinking { animation: blink 1s linear infinite; }
+.sub-item { margin: 5px 0; }
+.tick { color: #22c55e; }
+.cross { color: #ef4444; }
 
-.brand-mystro{
-  height:clamp(40px, 5vw, 48px);     /* responsive logo height */
-  width:auto;
-  display:block;
-}
+/* Header / Branding — side-by-side (stable) */
+.brand-header { display: flex; justify-content: center; padding: 12px 0; background: #fff; }
+.brand-box { display: flex; align-items: flex-end; gap: 14px; position: static; }
+.brand-mystro { height: 44px; width: auto; display: block; }
 
 /* AnalyticA wordmark (Metallica-style), inline next to logo */
 .brand-addon{
-  position:static;                   /* explicit reset */
-  transform:skewX(-4deg) translateY(2px); /* tiny baseline nudge */
-  display:inline-block;
-  white-space:nowrap;
-
-  font-family:'Metal Mania', system-ui, sans-serif;
-  font-size:clamp(22px, 3.2vw, 34px);
-  line-height:1;
-  letter-spacing:.5px;
-
+  position: static;                 /* ensure NOT absolute */
+  display: inline-block; white-space: nowrap;
+  transform: skewX(-4deg) translateY(2px); /* small baseline nudge */
+  font-family: 'Metal Mania', system-ui, sans-serif;
+  font-size: 34px; line-height: 1; letter-spacing: .5px;
   /* metallic look */
-  background:linear-gradient(180deg,#f8f8f8 0%, #d5d5d5 35%, #8e8e8e 60%, #e8e8e8 100%);
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
-  text-shadow:0 1px 0 #fff, 0 2px 4px rgba(0,0,0,.25);
-
-  margin:0;                          /* override any previous margins */
+  background: linear-gradient(180deg,#f8f8f8 0%, #d5d5d5 35%, #8e8e8e 60%, #e8e8e8 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: 0 1px 0 #fff, 0 2px 4px rgba(0,0,0,.25);
+  margin: 0;
 }
 
-/* Small screens: compress spacing a touch */
+/* Footer */
+.site-footer { display: flex; align-items: center; padding: 16px 20px; background: #fff; }
+.footer-spacer { flex: 1; }
+.brand-insight { height: 36px; width: auto; }
+
+/* Links */
+a { color: #0b5ed7; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Small screens */
 @media (max-width: 600px){
-  .brand-box{ gap:12px; }
+  .brand-mystro { height: 40px; }
+  .brand-addon  { font-size: 22px; transform: skewX(-4deg) translateY(1px); }
 }
