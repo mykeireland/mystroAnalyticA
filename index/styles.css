@@ -60,7 +60,7 @@ a:hover { text-decoration: underline; }
   content: "AnalyticA";
   position: absolute;
   bottom: -14px;                 /* move up/down if needed */
-  left: 74%;                     /* nudge 72–76% to sit under the “o” */
+  left: 76%;                     /* nudge 72–76% to sit under the “o” */
   transform: translateX(-50%) skewX(-4deg);
   white-space: nowrap;
 
