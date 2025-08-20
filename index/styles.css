@@ -10,8 +10,8 @@
 
 .brand-addon{
   position: absolute;
-  bottom: -10px;                                  /* distance below the logo */
-  left: 74%;                                      /* ≈ under the "o" — adjust 70–78% to taste */
+  bottom: -5px;                                  /* distance below the logo */
+  left: 78%;                                      /* ≈ under the "o" — adjust 70–78% to taste */
   transform: translateX(-50%);
   white-space: nowrap;
   font-family: 'Metal Mania', system-ui, sans-serif;
