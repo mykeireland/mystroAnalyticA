@@ -10,18 +10,26 @@
 
 .brand-addon{
   position: absolute;
-  bottom: -5px;                                  /* distance below the logo */
-  left: 78%;                                      /* ≈ under the "o" — adjust 70–78% to taste */
+  bottom: -10px;                     /* distance below the logo */
+  left: 74%;                         /* ≈ under the "o" — adjust 70–78% to taste */
   transform: translateX(-50%);
   white-space: nowrap;
   font-family: 'Metal Mania', system-ui, sans-serif;
   font-size: 28px;
   letter-spacing: .5px;
-  background: linear-gradient(180deg,#f8f8f8 0%, #d5d5d5 35%, #8e8e8e 60%, #e8e8e8 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 1px 0 #fff, 0 2px 4px rgba(0,0,0,.25);
+
+  /* Black text with white/grey highlights */
+  color: #000;                       /* main fill */
+  -webkit-text-stroke: 0.6px #e6e6e6;/* subtle light-grey edge */
+  text-shadow:
+    0 1px 0 #fff,                    /* lower highlight */
+    0 -1px 0 #d9d9d9,                /* upper bevel line */
+    0 2px 4px rgba(0,0,0,.25);       /* soft drop shadow */
+
+  /* disable previous gradient fill */
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
 }
 
 /* small screens: nudge position & size */
