@@ -28,7 +28,7 @@ module.exports = async function (context, req) {
     const name = (req.query.name || "").toString();
 
     // TTL in minutes (default 5). Can override via ?maxAgeMinutes=NN
-    const ttlMin = Number(req.query.maxAgeMinutes ?? process.env.MAX_AGE_MINUTES ?? 5);
+    const ttlMin = Number(req.query.maxAgeMinutes ?? process.env.MAX_AGE_MINUTES ?? 3);
     const cutoff = new Date(Date.now() - ttlMin * 60_000);
 
     if (!account) {
