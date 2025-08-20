@@ -15,22 +15,21 @@ const MIME = {
   ".woff2": "font/woff2"
 };
 
+const NO_STORE = new Set([".html", ".css", ".js"]); // ensure new CSS/JS loads
+
 module.exports = async function (context, req) {
   try {
-    // path param from function route (e.g., /{*path})
     let rel = (req.params?.path || "").replace(/^\//, "");
     if (!rel || rel === "" || rel === "index") rel = "index.html";
 
-    const filePath = path.join(__dirname, rel);
+    const resolved = path.resolve(path.join(__dirname, rel));
 
-    // Prevent path traversal
-    const resolved = path.resolve(filePath);
+    // Block traversal
     if (!resolved.startsWith(path.resolve(__dirname))) {
       context.res = { status: 400, body: "Bad request" };
       return;
     }
 
-    // Read file
     let data;
     try {
       data = await fs.readFile(resolved);
@@ -39,13 +38,12 @@ module.exports = async function (context, req) {
       return;
     }
 
-    // Content type + caching
     const ext = path.extname(resolved).toLowerCase();
     const contentType = MIME[ext] || "application/octet-stream";
 
     const headers = {
       "Content-Type": contentType,
-      "Cache-Control": contentType.includes("text/html")
+      "Cache-Control": NO_STORE.has(ext)
         ? "no-store"
         : "public, max-age=31536000, immutable"
     };
