@@ -13,7 +13,7 @@ h1 { text-align: center; margin: 0 0 16px; }
 .category h2 { margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
 .row { display: flex; gap: 16px; }
 .left { flex: 1; }
-.right { width: 260px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.right { width: 260px; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
 .timestamp { font-size: 0.9rem; color: #666; }
 .status-indicator { width: 14px; height: 14px; border-radius: 50%; background: #ccc; }
 .status-green { background: #22c55e; }
