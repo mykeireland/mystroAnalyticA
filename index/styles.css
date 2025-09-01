@@ -72,12 +72,52 @@ a:hover { text-decoration: underline; }
 /* main fill */
 color:#111;
 
-/* subtle red edge & soft glow */
-text-shadow:
-  0 1px 0   #3b0d0d,   /* very dark red edge */
-  0 0 2px   #7f1d1d,   /* deep red halo */
-  0 0 4px   #991b1b;   /* soft red glow */
+/* Animated aura effect */
+@keyframes auraPulse {
+  0% {
+    text-shadow:
+      0 1px 0 #3b0d0d,
+      0 0 2px #7f1d1d,
+      0 0 4px #991b1b,
+      0 0 6px rgba(239,68,68,0.5),
+      0 0 10px rgba(234,179,8,0.35);
+  }
+  50% {
+    text-shadow:
+      0 1px 0 #3b0d0d,
+      0 0 3px #b91c1c,
+      0 0 6px #dc2626,
+      0 0 10px rgba(239,68,68,0.75),
+      0 0 16px rgba(234,179,8,0.55);
+  }
+  100% {
+    text-shadow:
+      0 1px 0 #3b0d0d,
+      0 0 2px #7f1d1d,
+      0 0 4px #991b1b,
+      0 0 6px rgba(239,68,68,0.5),
+      0 0 10px rgba(234,179,8,0.35);
+  }
 }
+
+.brand-box::after {
+  content: "AnalyticA";
+  position: absolute;
+  bottom: -14px;
+  left: 84%;
+  transform: translateX(-50%) skewX(-4deg);
+  white-space: nowrap;
+
+  font-family: 'Metal Mania', cursive, sans-serif;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: .5px;
+  color: #111;
+
+  /* animated aura */
+  animation: auraPulse 2.5s ease-in-out infinite;
+}
+
 
 /* Small screens */
 @media (max-width:600px){
