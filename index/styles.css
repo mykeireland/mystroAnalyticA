@@ -1,4 +1,4 @@
-/* Load the Metal Mania font for the AnalyticA tag */
+/* Load the Goldman font for the AnalyticA tag */
 @import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
 
 /* ===== ORIGINAL (unchanged) ============================================ */
@@ -25,12 +25,18 @@ h1 { text-align: center; margin: 0 0 16px; }
 .tick { color: #22c55e; }
 .cross { color: #ef4444; }
 
-/* Header (original) */
-.brand-header { display: flex; justify-content: center; padding: 12px 0; background: #fff; }
-.brand-box { max-width: 240px; position: relative; }
+/* Header */
+.brand-header { display: flex; justify-content: center; padding: 12px 0; background: #fff; border-bottom: 3px solid #e5e5e5; }
+.brand-box { max-width: 240px; position: relative;
+
+/* === AnalyticA sizing + reserved space (scales with viewport) === */
+  --aa-font-size: clamp(20px, 3.2vw, 28px);
+  --aa-gap: calc(var(--aa-font-size) * 1.15);   /* space reserved under logo */
+  padding-bottom: var(--aa-gap);
+}
 .brand-mystro { width: 100%; height: 100px; }
 
-/* Footer (original) */
+/* Footer */
 .site-footer { display: flex; align-items: center; padding: 16px 20px; background: #fff; }
 .footer-spacer { flex: 1; }
 .brand-insight { height: 36px; width: auto; }
@@ -40,7 +46,7 @@ a:hover { text-decoration: underline; }
 
 /* ===== ADD-ON (AnalyticA under mystro) ================= */
 
-/* Keyframes for aura */
+/* Aura animation (top-level) */
 @keyframes auraPulse {
   0% {
     text-shadow:
@@ -68,20 +74,25 @@ a:hover { text-decoration: underline; }
 /* Hide any old inline span */
 .brand-addon { display: none !important; }
 
-/* AnalyticA tag (::after) */
+/* AnalyticA tag (::after) — placed AFTER the logo and space reserved by .brand-box padding */
 .brand-box::after {
   content: "AnalyticA";
   position: absolute;
-  bottom: -14px;
+  top: 100%;                           /* sit below the logo */
   left: 84%;
   transform: translateX(-50%) skewX(-4deg);
+  margin-top: calc(var(--aa-font-size) * 0.1);
   white-space: nowrap;
 
-  font-family: 'Goldman', cursive, sans-serif;
-  font-size: 28px;
+  font-family: 'Goldman', system-ui, sans-serif;
+  font-size: var(--aa-font-size);
   line-height: 1;
   letter-spacing: .5px;
   color: #111;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 
   text-shadow:
     0 0 2px #7f1d1d,
@@ -92,12 +103,13 @@ a:hover { text-decoration: underline; }
   animation: auraPulse 2.5s ease-in-out infinite;
 }
 
-/* Small screens */
-@media (max-width:900px){
-  .brand-box::after { left: 78%; bottom: -12px; font-size: 26px; }
+/* Small screens — only tweak position/size variables */
+@media (max-width: 900px){
+  .brand-box::after { left: 78%; }
 }
-@media (max-width:600px){
-  .brand-box::after { left: 70%; bottom: -10px; font-size: 22px; }
+@media (max-width: 600px){
+  .brand-box { --aa-font-size: clamp(18px, 5vw, 22px); }
+  .brand-box::after { left: 70%; }
 }
 
 /* Respect reduced motion */
