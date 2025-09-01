@@ -27,7 +27,7 @@ h1 { text-align: center; margin: 0 0 16px; }
 
 /* Header (original) */
 .brand-header { display: flex; justify-content: center; padding: 12px 0; background: #fff; }
-.brand-box { max-width: 240px; }
+.brand-box { max-width: 240px; position: relative; }
 .brand-mystro { width: 100%; height: auto; }
 
 /* Footer (original) */
@@ -38,51 +38,42 @@ h1 { text-align: center; margin: 0 0 16px; }
 a { color: #0b5ed7; text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-/* ===== ADD-ON (AnalyticA under mystro, no HTML change) ================= */
+/* ===== ADD-ON (AnalyticA under mystro) ================= */
 
-/* Aura animation keyframes */
-@keyframes aaAura {
+/* Keyframes for aura */
+@keyframes auraPulse {
   0% {
     text-shadow:
-      0 1px 0 #3b0d0d,
       0 0 2px #7f1d1d,
       0 0 4px #991b1b,
-      0 0 6px rgba(239,68,68,0.50),
-      0 0 10px rgba(234,179,8,0.35);
+      0 0 8px rgba(239,68,68,.7),
+      0 0 12px rgba(234,179,8,.5);
   }
   50% {
     text-shadow:
-      0 1px 0 #3b0d0d,
       0 0 3px #b91c1c,
       0 0 6px #dc2626,
-      0 0 10px rgba(239,68,68,0.75),
-      0 0 16px rgba(234,179,8,0.55);
+      0 0 12px rgba(239,68,68,.9),
+      0 0 18px rgba(234,179,8,.65);
   }
   100% {
     text-shadow:
-      0 1px 0 #3b0d0d,
       0 0 2px #7f1d1d,
       0 0 4px #991b1b,
-      0 0 6px rgba(239,68,68,0.50),
-      0 0 10px rgba(234,179,8,0.35);
+      0 0 8px rgba(239,68,68,.7),
+      0 0 12px rgba(234,179,8,.5);
   }
 }
-
-/* Make room below the logo */
-.brand-header { padding: 12px 0 36px; }
-
-/* Anchor pseudo-element */
-.brand-box { position: relative; }
 
 /* Hide any old inline span */
 .brand-addon { display: none !important; }
 
-/* AnalyticA tag */
+/* AnalyticA tag (::after) */
 .brand-box::after {
   content: "AnalyticA";
   position: absolute;
-  bottom: -14px;               /* move up/down if needed */
-  left: 84%;                   /* position under the “o” */
+  bottom: -14px;
+  left: 84%;
   transform: translateX(-50%) skewX(-4deg);
   white-space: nowrap;
 
@@ -92,26 +83,24 @@ a:hover { text-decoration: underline; }
   letter-spacing: .5px;
   color: #111;
 
-  /* baseline glow */
   text-shadow:
-    0 1px 0 #3b0d0d,
     0 0 2px #7f1d1d,
     0 0 4px #991b1b,
-    0 0 6px rgba(239,68,68,0.50),
-    0 0 10px rgba(234,179,8,0.35);
+    0 0 8px rgba(239,68,68,.7),
+    0 0 12px rgba(234,179,8,.5);
 
-  /* animated aura */
-  animation: aaAura 2.5s ease-in-out infinite;
-  will-change: text-shadow;
+  animation: auraPulse 2.5s ease-in-out infinite;
 }
 
 /* Small screens */
+@media (max-width:900px){
+  .brand-box::after { left: 78%; bottom: -12px; font-size: 26px; }
+}
 @media (max-width:600px){
-  .brand-header { padding: 12px 0 30px; }
   .brand-box::after { left: 70%; bottom: -10px; font-size: 22px; }
 }
 
-/* (Optional) Respect reduced-motion */
+/* Respect reduced motion */
 @media (prefers-reduced-motion: reduce){
   .brand-box::after { animation: none; }
 }
