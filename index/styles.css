@@ -9,7 +9,7 @@ body { font-family: Arial, sans-serif; background: #f4f4f4; color: #333; margin:
 h1 { text-align: center; margin: 0 0 16px; }
 
 /* Cards */
-.category { background: #fff; padding: 16px; margin: 12px 0; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+.category { background: #fff; padding: 24px; margin: 24px 0; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
 .category h2 { margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
 .row { display: flex; gap: 16px; }
 .left { flex: 1; }
