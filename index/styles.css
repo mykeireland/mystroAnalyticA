@@ -39,47 +39,15 @@ a { color: #0b5ed7; text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 /* ===== ADD-ON (AnalyticA under mystro, no HTML change) ================= */
-/* Make a little room below the logo */
-.brand-header { padding: 12px 0 36px; }
 
-/* Anchor a pseudo-element to the existing logo box */
-.brand-box { position: relative; }
-
-/* ==== AnalyticA: black text with red/yellow glow ==== */
-
-/* Hide any old inline <span class="brand-addon">AnalyticA</span> if it exists */
-.brand-addon{ display:none !important; }
-
-/* Keep room under the logo */
-.brand-header { padding: 12px 0 36px; }
-/* Anchor the tag to the existing logo box */
-.brand-box { position: relative; }
-
-/* Single, styled label drawn via CSS */
-.brand-box::after{
-  content: "AnalyticA";
-  position: absolute;
-  bottom: -14px;                 /* move up/down if needed */
-  left: 84%;                     /* nudge 72–76% to sit under the “o” */
-  transform: translateX(-50%) skewX(-4deg);
-  white-space: nowrap;
-
-  font-family: 'Goldman', system-ui, sans-serif;
-  font-size: 28px;
-  line-height: 1;
-  letter-spacing: .5px;
-
-/* main fill */
-color:#111;
-
-/* Animated aura effect */
-@keyframes auraPulse {
+/* Aura animation keyframes */
+@keyframes aaAura {
   0% {
     text-shadow:
       0 1px 0 #3b0d0d,
       0 0 2px #7f1d1d,
       0 0 4px #991b1b,
-      0 0 6px rgba(239,68,68,0.5),
+      0 0 6px rgba(239,68,68,0.50),
       0 0 10px rgba(234,179,8,0.35);
   }
   50% {
@@ -95,16 +63,26 @@ color:#111;
       0 1px 0 #3b0d0d,
       0 0 2px #7f1d1d,
       0 0 4px #991b1b,
-      0 0 6px rgba(239,68,68,0.5),
+      0 0 6px rgba(239,68,68,0.50),
       0 0 10px rgba(234,179,8,0.35);
   }
 }
 
+/* Make room below the logo */
+.brand-header { padding: 12px 0 36px; }
+
+/* Anchor pseudo-element */
+.brand-box { position: relative; }
+
+/* Hide any old inline span */
+.brand-addon { display: none !important; }
+
+/* AnalyticA tag */
 .brand-box::after {
   content: "AnalyticA";
   position: absolute;
-  bottom: -14px;
-  left: 84%;
+  bottom: -14px;               /* move up/down if needed */
+  left: 84%;                   /* position under the “o” */
   transform: translateX(-50%) skewX(-4deg);
   white-space: nowrap;
 
@@ -114,13 +92,26 @@ color:#111;
   letter-spacing: .5px;
   color: #111;
 
-  /* animated aura */
-  animation: auraPulse 2.5s ease-in-out infinite;
-}
+  /* baseline glow */
+  text-shadow:
+    0 1px 0 #3b0d0d,
+    0 0 2px #7f1d1d,
+    0 0 4px #991b1b,
+    0 0 6px rgba(239,68,68,0.50),
+    0 0 10px rgba(234,179,8,0.35);
 
+  /* animated aura */
+  animation: aaAura 2.5s ease-in-out infinite;
+  will-change: text-shadow;
+}
 
 /* Small screens */
 @media (max-width:600px){
   .brand-header { padding: 12px 0 30px; }
-  .brand-box::after{ left: 70%; bottom: -10px; font-size: 22px; }
+  .brand-box::after { left: 70%; bottom: -10px; font-size: 22px; }
+}
+
+/* (Optional) Respect reduced-motion */
+@media (prefers-reduced-motion: reduce){
+  .brand-box::after { animation: none; }
 }
