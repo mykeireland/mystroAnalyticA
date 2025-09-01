@@ -26,8 +26,15 @@ h1 { text-align: center; margin: 0 0 16px; }
 .cross { color: #ef4444; }
 
 /* Header */
-.brand-header { display: flex; justify-content: center; padding: 12px 0; background: #fff; border-bottom: 3px solid #e5e5e5; }
-.brand-box { max-width: 240px; position: relative;
+.brand-header {
+  display: flex;
+  justify-content: center;
+  background: #fff;
+  border-bottom: 3px solid #e5e5e5;
+
+  /* add more breathing space so AnalyticA sits on white */
+  padding: 12px 0 48px;  /* top 12px, sides 0, bottom 48px */
+}
 
 /* === AnalyticA sizing + reserved space (scales with viewport) === */
   --aa-font-size: clamp(20px, 3.2vw, 28px);
