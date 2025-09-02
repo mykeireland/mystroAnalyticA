@@ -1,5 +1,5 @@
-/* Load the Goldman font for the AnalyticA tag */
-@import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
+/* Load the Metal Mania font for the AnalyticA tag */
+@import url('https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap');
 
 /* ===== ORIGINAL (unchanged) ============================================ */
 /* Base */
@@ -9,11 +9,11 @@ body { font-family: Arial, sans-serif; background: #f4f4f4; color: #333; margin:
 h1 { text-align: center; margin: 0 0 16px; }
 
 /* Cards */
-.category { background: #fff; padding: 24px; margin: 24px 0; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+.category { background: #fff; padding: 16px; margin: 12px 0; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
 .category h2 { margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
 .row { display: flex; gap: 16px; }
 .left { flex: 1; }
-.right { width: 260px; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+.right { width: 260px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
 .timestamp { font-size: 0.9rem; color: #666; }
 .status-indicator { width: 14px; height: 14px; border-radius: 50%; background: #ccc; }
 .status-green { background: #22c55e; }
@@ -25,25 +25,12 @@ h1 { text-align: center; margin: 0 0 16px; }
 .tick { color: #22c55e; }
 .cross { color: #ef4444; }
 
-/* Header */
-.brand-header {
-  display: 200px;
-  justify-content: center;
-  background: #fff;
-  border-bottom: 3px solid #e5e5e5;
+/* Header (original) */
+.brand-header { display: flex; justify-content: center; padding: 12px 0; background: #fff; }
+.brand-box { max-width: 240px; }
+.brand-mystro { width: 100%; height: auto; }
 
-  /* add more breathing space so AnalyticA sits on white */
-  padding: 12px 0 48px;  /* top 12px, sides 0, bottom 48px */
-}
-
-/* === AnalyticA sizing + reserved space (scales with viewport) === */
-  --aa-font-size: clamp(20px, 3.2vw, 28px);
-  --aa-gap: calc(var(--aa-font-size) * 1.15);   /* space reserved under logo */
-  padding-bottom: var(--aa-gap);
-}
-.brand-mystro { width: 100%; height: 100px; }
-
-/* Footer */
+/* Footer (original) */
 .site-footer { display: flex; align-items: center; padding: 16px 20px; background: #fff; }
 .footer-spacer { flex: 1; }
 .brand-insight { height: 36px; width: auto; }
@@ -51,75 +38,49 @@ h1 { text-align: center; margin: 0 0 16px; }
 a { color: #0b5ed7; text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-/* ===== ADD-ON (AnalyticA under mystro) ================= */
+/* ===== ADD-ON (AnalyticA under mystro, no HTML change) ================= */
+/* Make a little room below the logo */
+.brand-header { padding: 12px 0 36px; }
 
-/* Aura animation (top-level) */
-@keyframes auraPulse {
-  0% {
-    text-shadow:
-      0 0 2px #7f1d1d,
-      0 0 4px #991b1b,
-      0 0 8px rgba(239,68,68,.7),
-      0 0 12px rgba(234,179,8,.5);
-  }
-  50% {
-    text-shadow:
-      0 0 3px #b91c1c,
-      0 0 6px #dc2626,
-      0 0 12px rgba(239,68,68,.9),
-      0 0 18px rgba(234,179,8,.65);
-  }
-  100% {
-    text-shadow:
-      0 0 2px #7f1d1d,
-      0 0 4px #991b1b,
-      0 0 8px rgba(239,68,68,.7),
-      0 0 12px rgba(234,179,8,.5);
-  }
-}
+/* Anchor a pseudo-element to the existing logo box */
+.brand-box { position: relative; }
 
-/* Hide any old inline span */
-.brand-addon { display: none !important; }
+/* ==== AnalyticA: black text with red/yellow glow ==== */
 
-/* AnalyticA tag (::after) — placed AFTER the logo and space reserved by .brand-box padding */
-.brand-box::after {
+/* Hide any old inline <span class="brand-addon">AnalyticA</span> if it exists */
+.brand-addon{ display:none !important; }
+
+/* Keep room under the logo */
+.brand-header { padding: 12px 0 36px; }
+/* Anchor the tag to the existing logo box */
+.brand-box { position: relative; }
+
+/* Single, styled label drawn via CSS */
+.brand-box::after{
   content: "AnalyticA";
   position: absolute;
-  top: 100%;                           /* sit below the logo */
-  left: 84%;
+  bottom: -14px;                 /* move up/down if needed */
+  left: 84%;                     /* nudge 72–76% to sit under the “o” */
   transform: translateX(-50%) skewX(-4deg);
-  margin-top: calc(var(--aa-font-size) * 0.1);
   white-space: nowrap;
 
   font-family: 'Goldman', system-ui, sans-serif;
-  font-size: var(--aa-font-size);
+  font-size: 28px;
   line-height: 1;
   letter-spacing: .5px;
-  color: #111;
 
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+  /* main fill */
+  color:#111;
 
+  /* subtle red edge & soft glow */
   text-shadow:
-    0 0 2px #7f1d1d,
-    0 0 4px #991b1b,
-    0 0 8px rgba(239,68,68,.7),
-    0 0 12px rgba(234,179,8,.5);
-
-  animation: auraPulse 2.5s ease-in-out infinite;
+    0 1px 0   #3b0d0d,   /* very dark red edge */
+    0 0 2px   #7f1d1d,   /* deep red halo */
+    0 0 4px   #991b1b;   /* soft red glow */
 }
 
-/* Small screens — only tweak position/size variables */
-@media (max-width: 900px){
-  .brand-box::after { left: 78%; }
-}
-@media (max-width: 600px){
-  .brand-box { --aa-font-size: clamp(18px, 5vw, 22px); }
-  .brand-box::after { left: 70%; }
-}
-
-/* Respect reduced motion */
-@media (prefers-reduced-motion: reduce){
-  .brand-box::after { animation: none; }
+/* Small screens */
+@media (max-width:600px){
+  .brand-header { padding: 12px 0 30px; }
+  .brand-box::after{ left: 70%; bottom: -10px; font-size: 22px; }
 }
